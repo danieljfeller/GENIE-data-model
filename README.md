@@ -1,5 +1,5 @@
 # GENIE data model
 
-AACR project GENIE
+AACR project GENIE  
 Repository for data model
 
