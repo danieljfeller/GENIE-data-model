@@ -1,53 +1,37 @@
-# GENIE Data Model (GDM) v1.0.1 — Specification
+# GDM v1.0.1 — Field Specification
 
-This document provides a textual representation of the GENIE Data Model (GDM) as implemented in this directory. It covers the data model's structure, each table's fields, data types, controlled vocabularies, and the harmonization mappings required to bring heterogeneous site data into the unified GDM format.
+This document is the human-readable companion to [`GDM_v1.0.1_CurationDirectives.pdf`](GDM_v1.0.1_CurationDirectives.pdf) and [`GDM_v1.0.1_DataDictionary.csv`](GDM_v1.0.1_DataDictionary.csv). It describes every table in the GDM v1.0.1 schema — what each field captures, its data type and units, whether it is required, and the full set of allowed values with their meaning.
 
-**Source authority:** GDM_v1.0.1.pdf (Jennifer Hoppe, 2026-02-23), a 259-page REDCap curation specification prepared for AACR Project GENIE Breast Cancer (BPC BrCa).
+**Source authority:** GDM_v1.0.1_CurationDirectives.pdf (Jennifer Hoppe, 2026-02-23) — the 259-page REDCap curation specification for AACR Project GENIE Breast Cancer (BPC BrCa).
+
+## How to Read This Document
+
+Each table section contains a field-by-field reference table with these columns:
+
+| Column | Meaning |
+|--------|---------|
+| **Field** | The exact variable name as it appears in the data file |
+| **Type** | Data type: `String` (text), `Float` (number), or `Integer` |
+| **Units** | Unit of measurement where applicable (e.g. `Days`, `Years`, `Months`) |
+| **Required** | Whether the field must be populated for a record to be valid |
+| **Description / Controlled Vocabulary** | Plain-language description plus the complete list of allowed coded values |
+
+**Coded values** appear throughout — for example, sex is stored as `1=Male, 2=Female` rather than as text. These codes follow established standards (NAACCR, AJCC, ICD-O-3, OncoTree) so that GENIE data is interoperable with other cancer registries and international datasets.
+
+**All dates** in the curated tables are stored as the number of days elapsed since the patient's date of birth (indicated by a `Days` unit). For example, a patient born in 1965 whose cancer was diagnosed 18,250 days later was diagnosed at age 50. This convention preserves every clinically meaningful time interval — time from diagnosis to surgery, duration on treatment, imaging follow-up interval — while ensuring that no calendar date capable of re-identifying a patient is ever stored in the data.
 
 ---
 
-## Architecture Overview
+## Two-Layer Architecture
 
-The GDM consists of two layers:
+The GDM v1.0.1 schema consists of two distinct data layers:
 
-| Layer | Tables | Origin |
-|-------|--------|--------|
-| **Core GENIE (Tier1A)** | `clinical_patient`, `clinical_sample`, `mutations`, `rna_seq`, `wsi_manifest` | Piped directly from GENIE repository via Sage Bionetworks |
-| **Extended GDM (Curated)** | `gdm_cancer_patient_information`, `gdm_cancer_diagnosis`, `gdm_clinical_visit`, `gdm_drug_exposure`, `gdm_imaging`, `gdm_surgical_procedures`, `gdm_biomarkers`, `gdm_tumor_sample_information` | Abstracted from EHR/registry by GENIE BPC curation team |
+| Layer | Tables | How it is produced |
+|-------|--------|--------------------|
+| **Core GENIE (Tier1A)** | `clinical_patient`, `clinical_sample`, `mutations`, `rna_seq`, `wsi_manifest` | Generated automatically from genomic submissions; standardized and distributed by Sage Bionetworks via Synapse |
+| **Extended GDM (Curated)** | `gdm_cancer_patient_information`, `gdm_cancer_diagnosis`, `gdm_clinical_visit`, `gdm_drug_exposure`, `gdm_imaging`, `gdm_surgical_procedures`, `gdm_biomarkers`, `gdm_tumor_sample_information` | Produced by trained clinical data curators abstracting from EHR records and tumor registry data using the REDCap curation instrument |
 
-All tables share the primary key `PATIENT_ID` / `patient_id_curated` (format: `<CENTER>-P#####`, e.g. `DFCI-000183`). The extended GDM tables use `patient_id_curated` as their primary/foreign key.
-
-**Temporal encoding convention:** All dates in the extended GDM tables are expressed as integer days elapsed from the patient's date of birth (days-from-birth), never as calendar dates. This preserves temporal relationships while protecting PHI.
-
----
-
-## Directory Structure
-
-```
-genie_data_model/
-├── SPECIFICATION.md               # This document
-├── data_dictionary.csv            # Simplified field-level dictionary (core tables)
-├── harmonization_mapping.csv      # Site-specific transform rules
-├── clinical_patient_schema.csv    # Column list for clinical_patient
-├── clinical_sample_schema.csv     # Column list for clinical_sample
-├── mutations_schema.csv           # Column list for mutations
-├── rna_seq_schema.csv             # Column list for rna_seq
-├── wsi_schema.csv                 # Column list for wsi_manifest
-└── fcp_schemas/                   # Rhino FCP schema CSVs (full type + description)
-    ├── clinical_patient.csv
-    ├── clinical_sample.csv
-    ├── mutations.csv
-    ├── rna_seq.csv
-    ├── wsi_manifest.csv
-    ├── gdm_cancer_patient_information.csv
-    ├── gdm_cancer_diagnosis.csv
-    ├── gdm_clinical_visit.csv
-    ├── gdm_drug_exposure.csv
-    ├── gdm_imaging.csv
-    ├── gdm_surgical_procedures.csv
-    ├── gdm_biomarkers.csv
-    └── gdm_tumor_sample_information.csv
-```
+Every table is linked by a shared patient identifier: `PATIENT_ID` in the core tables and `patient_id_curated` in the extended tables. The format is `<CENTER>-P#####` (e.g. `DFCI-000183`, `MSK-P00042`).
 
 ---
 
