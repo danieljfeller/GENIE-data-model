@@ -112,7 +112,7 @@ One row per sequenced sample with RNA-seq data. Contains transcript-per-million 
 | `ONCOTREE_CODE` | String | Yes | OncoTree code for the tumor sample. |
 | `<GENE>` (×200+) | Float | Yes | TPM expression value for each gene (e.g. `ACTB`, `GAPDH`, `TP53`, `KRAS`, `PIK3CA`, ...). |
 
-**Note:** Sites providing FPKM (site_b) or raw counts (site_c) must convert to TPM before submission. See harmonization mapping.
+**Note:** All expression values must be submitted in TPM. Sites providing FPKM or raw counts must convert before submission.
 
 ---
 
@@ -173,8 +173,8 @@ One row per cancer diagnosis per patient (index and non-index cancers). FK: `pat
 | `dx_age_yr` | Float | Years | Yes | Patient age in whole years at diagnosis. |
 | `dx_institution` | String | — | No | Diagnosis facility: `1`=Internal Institution, `2`=External Institution. |
 | `dx_confirmation` | String | — | No | Confirmation method: `1`=Positive histology, `2`=Positive cytology, `3`=Histology + immunophenotyping/genetics, `4`=Positive microscopic confirmation unspecified, `5`=Positive lab/marker, `6`=Direct visualization, `7`=Radiology/imaging, `8`=Clinical diagnosis only. |
-| `dx_primary_site` | String | — | Yes | Primary anatomic site (ICD-O-3 C-code, e.g. `C50.8`=overlapping lesion of breast, `C50.9`=breast NOS). |
-| `dx_morphology` | String | — | Yes | Histology and behavior (ICD-O-3 M-code, 5 digits, e.g. `85003`=Invasive carcinoma NST, `85223`=Infiltrating duct+lobular, `80723`=Squamous intraepithelial neoplasia III). |
+| `dx_primary_site` | String | — | Yes | Primary anatomic site coded using ICD-O-3 topography (C-code, e.g. `C34.1`=upper lobe of lung, `C61`=prostate). |
+| `dx_morphology` | String | — | Yes | Histology and behavior coded using ICD-O-3 morphology (5-digit M-code, e.g. `85003`=Invasive carcinoma NOS, `80703`=Squamous cell carcinoma NOS). |
 | `dx_laterality` | String | — | No | Laterality (NAACCR codes): `0`=Not a paired site, `1`=Right, `2`=Left, `3`=Only one side unspecified, `4`=Bilateral, `9`=Paired site side not specified. |
 | `dx_grade` | String | — | No | Histologic grade: `I`=Well differentiated, `II`=Moderately differentiated, `III`=Poorly differentiated, `IV`=Undifferentiated. |
 | `dx_clin_t` | String | — | No | Clinical T category (AJCC): `T0`, `T1`, `T1a`, `T1b`, `T1c`, `T2`, `T3`, `T4`, `Tis`, `TX`. Source: NAACCR C-prefix codes stripped (e.g. `C1C`→`T1c`). |
@@ -193,16 +193,6 @@ One row per cancer diagnosis per patient (index and non-index cancers). FK: `pat
 | `dx_mets_lymph` | Float | — | No | Distant lymph node metastasis (excluding regional nodes): `0`=None, `1`=Yes, `88`=Not applicable, `99`=Unknown. |
 | `dx_mets_other` | Float | — | No | Other distant metastasis (abdomen, adrenal, skin, pleura, peritoneum, etc.): `0`=None, `1`=Yes, `88`=Not applicable, `99`=Unknown. |
 | `dx_ca_type` | String | — | No | Primary cancer type: `1`=Lung, `2`=Prostate, `3`=Stomach, `4`=Colorectal, `5`=Liver, `6`=Melanoma, `7`=Bladder, `8`=Kidney, `9`=Breast, `10`=Ovarian, `11`=Pancreas, `12`=CNS. |
-| **Breast-specific fields** | | | | |
-| `breast_ot_inv_dcis` | String | — | No | Invasive vs. DCIS: `1`=Invasive, `2`=DCIS. |
-| `breast_ot_inv_score` | String | — | No | Oncotype DX recurrence score category: `1`=Actual score 0–100, `2`=XX4 (<11), `3`=XX5 (≥11), `4`=XX6 (not applicable – in situ), `5`=XX7 (ordered, not in chart), `6`=XX9 (not documented). |
-| `breast_ot_inv_score_details` | Float | — | No | Exact Oncotype DX recurrence score (0–100). Populate only when `breast_ot_inv_score=1`. |
-| `breast_ot_inv_risk` | String | — | No | Oncotype DX risk level: `0`=Low (0–17), `1`=Intermediate (18–30), `2`=High (≥31), `6`=Not applicable DCIS, `7`=Ordered not in chart, `8`=Not applicable not collected, `9`=Not documented. |
-| `breast_multigene_method` | String | — | No | Multigene assay: `1`=Mammaprint, `2`=PAM50/Prosigna, `3`=Breast Cancer Index, `4`=EndoPredict, `5`=Test type unknown, `6`=Multiple tests, `7`=Ordered not in chart, `8`=Not applicable, `9`=Not documented. |
-| `breast_multigene_results` | String | — | No | Multigene result: `1`=Numeric score 00–99, `2`=X1 (100), `3`=X2 Low, `4`=X3 Moderate, `5`=X4 High, `6`=X7 ordered not in chart, `7`=X8 not applicable, `8`=X9 not documented. |
-| `breast_er_summary` | String | — | No | ER receptor status: `0`=Negative (<1%), `1`=Positive (≥1%), `7`=Ordered not in chart, `9`=Not documented/not assessed. |
-| `breast_pr_summary` | String | — | No | PR receptor status: `0`=Negative, `1`=Positive, `7`=Ordered not in chart, `9`=Not documented/not assessed. |
-| `breast_her2_summary` | String | — | No | HER2 overall status (IHC+ISH combined): `0`=Negative/equivocal, `1`=Positive, `2`=Borderline, `7`=Ordered not in chart, `9`=Not documented/not assessed. |
 
 ---
 
@@ -278,27 +268,14 @@ One row per surgical pathology report. FK: `patient_id_curated`.
 | `proc_institution` | String | — | Yes | `1`=Internal Institution, `2`=External Institution. |
 | `proc_neoadjuvant_yn` | Float | — | No | Neoadjuvant therapy prior to this procedure: `1`=Yes, `0`=No. Derived by cross-referencing drug exposure start dates. |
 | `path_type` | String | — | Yes | Pathology discipline: `1`=Surgical pathology, `2`=Cytopathology, `3`=Hematopathology, `9`=Other. |
-| `proc_type_breast` | String | — | No | Breast procedure type (multi-select): `1`=Lumpectomy/Partial mastectomy, `2`=Simple/Total mastectomy, `3`=Modified radical mastectomy, `4`=Radical mastectomy, `5`=Sentinel lymph node biopsy, `6`=Axillary lymph node dissection, `7`=Core needle biopsy, `8`=Excisional biopsy, `9`=Other. |
 | `proc_margins` | String | — | No | Surgical margin status: `1`=Negative/clear, `2`=Positive (tumor at ink), `3`=Close (<2mm), `4`=Not applicable (biopsy only), `9`=Not documented. |
 | `proc_specimen_num` | Float | — | No | Number of distinct surgical specimens submitted (integer 1–30). |
-| **Breast biomarker fields (per specimen)** | | | | |
-| `breast_er_range` | String | — | No | ER% range: `0`=Negative/< 1%, `1`=Exact percent (see `_details`), `2`=R10 (1–10%), `3`=R20 (11–20%), ... `11`=R100 (91–100%), `12`=Test done% not stated, `13`=Not applicable, `14`=Not documented. |
-| `breast_er_range_details` | Float | — | No | Exact ER percent (1–100). Populate when `breast_er_range=1`. |
-| `breast_er_summary` | String | — | No | ER summary: `0`=Negative (<1%), `1`=Positive (≥1%), `7`=Ordered not in chart, `9`=Not documented. |
-| `breast_pr_range` | String | — | No | PR% range (same codes as `breast_er_range`). |
-| `breast_pr_range_details` | Float | — | No | Exact PR percent (1–100). |
-| `breast_pr_summary` | String | — | No | PR summary: `0`=Negative, `1`=Positive, `7`=Ordered not in chart, `9`=Not documented. |
-| `breast_her2_summary` | String | — | No | HER2 status from surgical specimen: `0`=Negative/equivocal, `1`=Positive, `2`=Borderline, `7`=Ordered not in chart, `9`=Not documented. |
-| `breast_ki67` | String | — | No | Ki-67 category: `1`=Actual value 0.0–100.0% (see `_details`), `2`=Test done% not stated, `3`=Not applicable, `4`=Not documented. |
-| `breast_ki67_details` | Float | — | No | Exact Ki-67 percentage (0.0–100.0). Populate when `breast_ki67=1`. |
-| `breast_ln_pos_axil` | String | — | No | Positive axillary lymph nodes: `0`=All negative, `1`=Actual count 1–99 (see `_details`), `2`=X1 (≥100), `3`=X5 (positive count unspecified), `4`=X6 (positive on aspiration/core), `5`=X8 (not applicable), `6`=X9 (not documented). |
-| `breast_ln_pos_axil_details` | Float | — | No | Exact positive axillary node count (1–99). |
 
 ---
 
 ### `gdm_biomarkers`
 
-One row per biomarker test event per patient. Covers PD-L1 testing and serum tumor markers (CA15-3, CA27-29). FK: `patient_id_curated`.
+One row per biomarker test event per patient. Covers PD-L1 testing and serum tumor markers. FK: `patient_id_curated`.
 
 | Field | Type | Units | Required | Description / Controlled Vocabulary |
 |-------|------|-------|----------|--------------------------------------|
@@ -332,64 +309,7 @@ One row per tumor panel test (NGS sequencing event). FK: `patient_id_curated`.
 | `sample_seq_report_year` | Float | — | Yes | 4-digit year of NGS report. Source: `cpt_seq_date`. |
 | `sample_class_curated` | String | — | Yes | Sample class: `1`=Tumor (solid tumor, cytology, core needle, surgical resection), `2`=cfDNA (circulating tumor DNA / liquid biopsy). Source: `Sample Type` from `data_clinical_sample.txt`. |
 | `sample_type_detailed_curated` | String | — | Yes | Anatomic origin: `1`=Primary tumor, `2`=Lymph node metastasis, `3`=Distant organ metastasis, `4`=Metastasis site unspecified, `5`=Local recurrence, `99`=Unknown. Source: `sample_type` from `data_clinical_sample.txt`. |
-| `sample_cancer_type_detailed_curated` | String | — | Yes | OncoTree cancer type code for the sample (e.g. `BRCA`, `MDLC`, `ILC`, `IDC`). Source: `cpt_oncotree_code` from `cancer_panel_test_level_dataset.csv`. |
-
----
-
-## Harmonization Mapping
-
-The following rules transform heterogeneous site-specific source data into the unified GDM format. Sites A, B, and C each have different schemas; only B and C require transformation.
-
-### Site B Mappings
-
-Source system: internal EHR database with tables `patient_data`, `specimen_data`, `somatic_variants`, `gene_expression_fpkm`.
-
-| Source Table | Source Column | GDM Table | GDM Column | Transform |
-|---|---|---|---|---|
-| `patient_data` | `patient_mrn` | `clinical_patient` | `PATIENT_ID` | Prefix with `DFCI-` |
-| `patient_data` | `gender` | `clinical_patient` | `SEX` | `M`→`Male`, `F`→`Female` |
-| `patient_data` | `race_ethnicity` | `clinical_patient` | `PRIMARY_RACE` | `Caucasian`→`White`, `African American`→`Black or African American` |
-| `patient_data` | `vital_status` | `clinical_patient` | `DEAD` | `Deceased`→`1`, `Alive`→`0` |
-| `specimen_data` | `specimen_id` | `clinical_sample` | `SAMPLE_ID` | Rename |
-| `specimen_data` | `cancer_diagnosis_local` | `clinical_sample` | `ONCOTREE_CODE` | Local string → OncoTree lookup |
-| `specimen_data` | `specimen_type` | `clinical_sample` | `SAMPLE_TYPE` | `Primary Tumor`→`Primary`, `Metastatic`→`Metastasis` |
-| `somatic_variants` | `gene_name` | `mutations` | `Hugo_Symbol` | Rename |
-| `somatic_variants` | `chr` | `mutations` | `Chromosome` | Strip `chr` prefix |
-| `somatic_variants` | `mutation_effect` | `mutations` | `Variant_Classification` | Rename |
-| `gene_expression_fpkm` | `FPKM_<GENE>` | `rna_seq` | `<GENE>` | FPKM → TPM conversion |
-
-### Site C Mappings
-
-Source system: clinical data warehouse with tables `pt_clinical`, `samples`, `variants`, `rnaseq_counts`.
-
-| Source Table | Source Column | GDM Table | GDM Column | Transform |
-|---|---|---|---|---|
-| `pt_clinical` | `pt_id` | `clinical_patient` | `PATIENT_ID` | Rename |
-| `pt_clinical` | `sex_cd` | `clinical_patient` | `SEX` | `male`→`Male`, `female`→`Female` |
-| `pt_clinical` | `race_cd` | `clinical_patient` | `PRIMARY_RACE` | HL7 codes: `2106-3`→`White`, `2054-5`→`Black or African American`, `2028-9`→`Asian` |
-| `pt_clinical` | `deceased_flag` | `clinical_patient` | `DEAD` | `Y`→`1`, `N`→`0` |
-| `samples` | `dx_icd_o_code` | `clinical_sample` | `ONCOTREE_CODE` | ICD-O → OncoTree: `C50.9`→`BRCA`, `C34.1`→`LUAD/LUSC`, `C25.9`→`PAAD`, `C18.9`→`CRC`, `C61`→`PRAD`, `C56.9`→`OV`, `C71.9`→`GBM` |
-| `samples` | `specimen_type_cd` | `clinical_sample` | `SAMPLE_TYPE` | `P`→`Primary`, `M`→`Metastasis`, `R`→`Recurrence`, `U`→`Unspecified` |
-| `variants` | `CHROM` | `mutations` | `Chromosome` | Already compatible (no `chr` prefix) |
-| `rnaseq_counts` | `<GENE>_raw_count` | `rna_seq` | `<GENE>` | Raw counts → TPM normalization required |
-
----
-
-## FCP Schema Format Reference
-
-All files in `fcp_schemas/` follow the Rhino FCP schema CSV format. Each file has exactly 9 rows:
-
-| Row | Name | Content |
-|-----|------|---------|
-| 1 | Variable Name | Column identifier (used as the field name in the dataset) |
-| 2 | Identifier | Marks which column(s) are the primary key (`Identifier`) |
-| 3 | Description | Human-readable description including controlled vocabulary values and source field mappings |
-| 4 | Type | Data type per column: `String`, `Float`, `Integer` |
-| 5 | Type Parameters | Additional type constraints (usually empty) |
-| 6 | Units | Units for numeric fields (e.g. `Days`, `Months`, `Years`, `U/mL`) |
-| 7 | Contains Sensitive Data? | `True` or `False` |
-| 8 | Permissions | Access permission level (typically `Default`) |
-| 9 | Required | `True` if field is mandatory, `False` if optional |
+| `sample_cancer_type_detailed_curated` | String | — | Yes | OncoTree cancer type code for the sample (e.g. `LUAD`, `PAAD`, `PRAD`). See [oncotree.mskcc.org](http://oncotree.mskcc.org) for the full vocabulary. |
 
 ---
 
@@ -397,8 +317,8 @@ All files in `fcp_schemas/` follow the Rhino FCP schema CSV format. Each file ha
 
 | Standard | Usage in GDM |
 |----------|-------------|
-| **ICD-O-3 Topography** | `dx_primary_site` (C-codes, e.g. `C50.9`) |
-| **ICD-O-3 Morphology** | `dx_morphology` (5-digit M-codes, e.g. `85003`) |
+| **ICD-O-3 Topography** | `dx_primary_site` (C-codes, e.g. `C34.1`=upper lobe of lung) |
+| **ICD-O-3 Morphology** | `dx_morphology` (5-digit M-codes, e.g. `80703`=squamous cell carcinoma NOS) |
 | **NAACCR** | Sex, race, ethnicity, laterality, and T/N/M stage codes |
 | **AJCC TNM** | `dx_clin_t/n/m`, `dx_path_t/n/m`, `dx_clin/path_group_stage`, `ajcc_edition` |
 | **OncoTree** | `ONCOTREE_CODE`, `sample_cancer_type_detailed_curated` |
