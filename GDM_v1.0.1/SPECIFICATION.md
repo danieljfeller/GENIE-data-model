@@ -1,8 +1,16 @@
 # GDM v1.0.1 — Field Specification
 
-This document is the human-readable companion to [`GDM_v1.0.1_CurationDirectives.pdf`](GDM_v1.0.1_CurationDirectives.pdf) and [`GDM_v1.0.1_DataDictionary.csv`](GDM_v1.0.1_DataDictionary.csv). It describes every table in the GDM v1.0.1 schema — what each field captures, its data type and units, whether it is required, and the full set of allowed values with their meaning.
+This document is the human-readable companion to [`GDM_v1.0.1_CurationDirectives.pdf`](GDM_v1.0.1_CurationDirectives.pdf) and [`GDM_v1.0.1_DataDictionary.csv`](GDM_v1.0.1_DataDictionary.csv). It describes the principal tables in the GDM v1.0.1 schema in prose: what each field captures, its data type and units, whether it is required, and the allowed values with their meaning.
 
-**Source authority:** GDM_v1.0.1_CurationDirectives.pdf (Jennifer Hoppe, 2026-02-23) — the 259-page REDCap curation specification for AACR Project GENIE Breast Cancer (BPC BrCa).
+**Source authority:** GDM_v1.0.1_CurationDirectives.pdf (Jennifer Hoppe, 2026-02-23), the 259-page REDCap curation specification, together with the REDCap data dictionary export.
+
+> **Coverage note.** This specification is a curated subset, not the whole schema.
+>
+> - The *extended* tables below (`gdm_*`) describe 8 of the 14 REDCap instruments, using the exact REDCap variable names but a `gdm_` table prefix and, in places, a table name that differs from the instrument name (`gdm_clinical_visit` is the `clinical_visits` instrument). The six instruments not covered here (`family_history`, `comorbidities`, `clinical_trial_history`, `radiation_treatment`, `hospitalizations`, `laboratory_testing`) and the roughly 500 fields omitted from the covered ones are documented field by field in the generated [`DATA_DICTIONARY.md`](DATA_DICTIONARY.md).
+> - The `gdm_biomarkers` table is a convenience view. Its INI1 and PD-L1 fields live in the `surgical_procedures` instrument; its serum tumor marker (`tm_*`) fields are not part of the v1.0.1 REDCap instrument and originate from the GENIE BPC source data used in the [worked example](../etl-plan.html).
+> - The *core* tables (`clinical_patient`, `clinical_sample`, `mutations`, `rna_seq`, `wsi_manifest`) describe the Tier1A GENIE release format that GDM references, not anything defined in the REDCap instrument. Consult the current [GENIE data release documentation on Synapse](https://www.synapse.org/genie) for the authoritative Tier1A file formats; the `rna_seq` and `wsi_manifest` layouts here are illustrative.
+>
+> When this document and the CSV disagree on a name, type, code or branching rule, the CSV is correct. Please report the discrepancy as an issue.
 
 ## How to Read This Document
 

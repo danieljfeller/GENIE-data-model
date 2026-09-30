@@ -1,0 +1,15 @@
+# GitHub Pages configuration. Markdown files in this repository render as pages at
+# https://<owner>.github.io/GENIE-data-model/<path>.html; other files are served as-is.
+title: GENIE Data Model (GDM)
+description: Open, versioned clinical data standard from AACR Project GENIE. Reference material and implementation guide.
+theme: jekyll-theme-primer
+markdown: kramdown
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: false
+exclude:
+  - scripts/
+  - .DS_Store
+  - "*.pyc"
