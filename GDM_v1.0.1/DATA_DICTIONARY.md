@@ -28,20 +28,20 @@ This document lists every one of the **663 fields** across the **14 instruments 
 
 | Table (instrument) | Rows | Fields | Required | Repeats? |
 |---|---|---:|---:|---|
-| [`patient_curation_eligibility`](#patient-curation-eligibility) | One record per patient (study-specific eligibility screen). | 7 | 7 | once per patient |
-| [`cancer_patient_information`](#cancer-patient-information) | One row per patient. Root table; every other curated table joins to it on `patient_id_curated`. | 64 | 20 | once per patient |
-| [`family_history`](#family-history) | One row per patient. | 2 | 0 | once per patient |
+| [`patient_curation_eligibility`](#patient_curation_eligibility) | One record per patient (study-specific eligibility screen). | 7 | 7 | once per patient |
+| [`cancer_patient_information`](#cancer_patient_information) | One row per patient. Root table; every other curated table joins to it on `patient_id_curated`. | 64 | 20 | once per patient |
+| [`family_history`](#family_history) | One row per patient. | 2 | 0 | once per patient |
 | [`comorbidities`](#comorbidities) | One row per patient (NCI Comorbidity Index items). | 27 | 4 | once per patient |
-| [`cancer_diagnosis`](#cancer-diagnosis) | One row per cancer diagnosis (index and non-index cancers). | 92 | 27 | per event |
+| [`cancer_diagnosis`](#cancer_diagnosis) | One row per cancer diagnosis (index and non-index cancers). | 92 | 27 | per event |
 | [`imaging`](#imaging) | One row per radiology report. | 72 | 12 | per event |
-| [`clinical_visits`](#clinical-visits) | One row per oncology clinic visit / medical oncologist note. | 42 | 8 | per event |
-| [`surgical_procedures`](#surgical-procedures) | One row per pathology report (surgical procedure). Also carries site-specific biomarkers such as ER/PR/HER2, INI1 and PD-L1. | 202 | 12 | per event |
-| [`drug_exposure`](#drug-exposure) | One row per cancer-directed drug exposure (trial or non-trial). | 37 | 12 | per event |
-| [`clinical_trial_history`](#clinical-trial-history) | One row per clinical trial enrollment. | 16 | 8 | per event |
-| [`radiation_treatment`](#radiation-treatment) | One row per radiation treatment course (section header says one form per treatment), although the v1.0.1 instrument is not configured as repeating in REDCap. | 29 | 7 | once per patient |
-| [`tumor_sample_information`](#tumor-sample-information) | One row per NGS-sequenced tumor sample. | 42 | 7 | per event |
+| [`clinical_visits`](#clinical_visits) | One row per oncology clinic visit / medical oncologist note. | 42 | 8 | per event |
+| [`surgical_procedures`](#surgical_procedures) | One row per pathology report (surgical procedure). Also carries site-specific biomarkers such as ER/PR/HER2, INI1 and PD-L1. | 202 | 12 | per event |
+| [`drug_exposure`](#drug_exposure) | One row per cancer-directed drug exposure (trial or non-trial). | 37 | 12 | per event |
+| [`clinical_trial_history`](#clinical_trial_history) | One row per clinical trial enrollment. | 16 | 8 | per event |
+| [`radiation_treatment`](#radiation_treatment) | One row per radiation treatment course (section header says one form per treatment), although the v1.0.1 instrument is not configured as repeating in REDCap. | 29 | 7 | once per patient |
+| [`tumor_sample_information`](#tumor_sample_information) | One row per NGS-sequenced tumor sample. | 42 | 7 | per event |
 | [`hospitalizations`](#hospitalizations) | One row per in-patient hospitalization. | 21 | 7 | per event |
-| [`laboratory_testing`](#laboratory-testing) | One row per laboratory result, although the v1.0.1 instrument is not configured as repeating in REDCap. | 10 | 0 | once per patient |
+| [`laboratory_testing`](#laboratory_testing) | One row per laboratory result, although the v1.0.1 instrument is not configured as repeating in REDCap. | 10 | 0 | once per patient |
 
 ---
 

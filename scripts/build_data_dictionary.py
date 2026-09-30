@@ -238,7 +238,7 @@ def build(csv_path: Path, xml_path: Path | None) -> str:
         req = sum(r["Required Field?"] == "y" for r in frows)
         rep = "per event" if form in repeating else "once per patient"
         w(
-            f"| [`{form}`](#{form.replace('_', '-')}) | {md_escape(meta.get('grain', ''))} | "
+            f"| [`{form}`](#{form}) | {md_escape(meta.get('grain', ''))} | "
             f"{len(frows)} | {req} | {rep} |"
         )
     w("")
